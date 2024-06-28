@@ -11,6 +11,12 @@ addCardBtn.addEventListener("click", () => {
   const card = myCreateCard(cardTitle);
   main.insertBefore(card, addCardBtn)
 
+  const removeCard = document.querySelectorAll(".remove-card")
+  removeCard.forEach((i) => {
+    i.addEventListener("click", (e) => {
+      e.target.parentElement.remove()
+    })
+  })
 });
 
 const myCreateCard = (cardTitle) => {
@@ -23,6 +29,7 @@ const myCreateCard = (cardTitle) => {
 
   const h3Text = document.createTextNode(cardTitle);
   cardBtn.innerText = "ADD"
+  myDiv.innerHTML += '<i class="fa-solid fa-xmark remove-card"></i>'
 
   myDiv.setAttribute("class", "card");
   cardInput.setAttribute("type", "text");

@@ -4,30 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./CSS/style.css">
+    <script src="https://kit.fontawesome.com/350478448c.js" crossorigin="anonymous"></script>
     <script src="./app.js" defer></script>
     <title>ToDo List</title>
 </head>
 <body>
-    <h1>To-Do List</h1>
+    <header>
+        <h1>To-Do List</h1>
+        <button class="themeBtn" onclick="themeChange()"><i class="fa-solid fa-moon"></i><i class="fa-solid fa-sun"></i></button>
+    </header>
     <main>
-        <div class="card">
-            <form name="form">
-                <input type="text" placeholder="Enter a Task">
-                <button>Add</button>
-            </form>
-        </div>
-        <div class="card">
-            <form name="form">
-                <input type="text" placeholder="Enter a Task">
-                <button>Add</button>
-            </form>
-        </div>
-        <div class="card">
-            <form name="form">
-                <input type="text" placeholder="Enter a Task">
-                <button>Add</button>
-            </form>
-        </div>
+       <button class="addCard">AddCard <i class="fa-solid fa-plus"></i></button>
     </main>
 </body>
 </html>

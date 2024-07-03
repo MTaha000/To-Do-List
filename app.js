@@ -1,22 +1,39 @@
 const main = document.querySelector("main")
-const container = document.getElementById("container")
-const addCardBtn = document.querySelector(".addCard")
+const addCardInput = document.querySelector(".addCard-Input")
+const addCard = document.querySelector(".addCard")
 const forms = document.querySelectorAll("form")
-
+let removeCard;
+let removeTask;
 let cards;
 
-addCardBtn.addEventListener("click", () => {
-  const cardTitle = prompt("enter card name?");
+let savedTasks = JSON.parse(localStorage.getItem("savedTasks")); // fetching savedTasks obj and converting
 
+if (!savedTasks) {
+  savedTasks = {};
+}
+
+addCard.addEventListener("submit", (e) => {
+  e.preventDefault()
+  const cardTitle = e.target[0].value;
   const card = myCreateCard(cardTitle);
-  main.insertBefore(card, addCardBtn)
 
-  const removeCard = document.querySelectorAll(".remove-card")
+  if (!cardTitle) return;
+
+  main.insertBefore(card, addCard)
+
+  removeCard = document.querySelectorAll(".remove-card")
   removeCard.forEach((i) => {
+
     i.addEventListener("click", (e) => {
-      e.target.parentElement.remove()
+      let prop = e.target.parentElement.children[1].innerText;
+
+      delete savedTasks[prop];
+      main.removeChild(e.target.parentElement)
+      localStorage.setItem("savedTasks", JSON.stringify(savedTasks));
     })
   })
+
+  e.target.reset();
 });
 
 const myCreateCard = (cardTitle) => {
@@ -42,6 +59,7 @@ const myCreateCard = (cardTitle) => {
   myDiv.appendChild(cardForm);
 
   cardForm.addEventListener("submit", addTask);
+
   cards = document.querySelectorAll(".card")
 
   return myDiv;
@@ -55,7 +73,9 @@ const addTask = (event) => {
   const parent = currentForm.parentElement;
   const ticket = CreateTicket(inputValue);
 
-  const h3Value = parent.children[0].innerText;
+  if (!inputValue) return;
+
+  const h3Value = parent.children[1].innerText;
 
   // Data saved in localStorage Start
   if (!Array.isArray(savedTasks[h3Value])) {
@@ -68,37 +88,47 @@ const addTask = (event) => {
   parent.appendChild(ticket)
 
   cards = document.querySelectorAll(".card")
+  buttons = document.querySelectorAll("button")
 
   ticket.addEventListener("dragstart", (e) => {
+
     let selected = e.target;
+    const prop = selected.parentElement.children[1].innerText
+    const index = savedTasks[prop].indexOf(selected.innerText)
+    savedTasks[prop].splice(index, 1)
 
     cards.forEach((card) => {
       card.addEventListener("dragover", (e) => {
         e.preventDefault();
       })
 
-      card.addEventListener("drop", () => {
+      card.addEventListener("drop", (e) => {
+
         card.appendChild(selected);
+        savedTasks[e.target.children[1].innerText].push(selected.innerText)
+        localStorage.setItem("savedTasks", JSON.stringify(savedTasks));
         selected = null;
       })
     })
-
   })
 
-  const removeTask = document.querySelectorAll("i")
+  removeTask = document.querySelectorAll(".removeTask")
   removeTask.forEach((i) => {
+
     i.addEventListener("click", (e) => {
-      e.target.parentElement.remove();
+      const objectProp = e.target.parentElement.parentElement.children[1].innerText;
+      let currentTask = e.target.parentElement;
+      let currentCard = e.target.parentElement.parentElement;
+      const index = savedTasks[objectProp].indexOf(currentTask.innerText);
+
+      savedTasks[objectProp].splice(index, 1)
+      currentCard.removeChild(currentTask);
+      localStorage.setItem("savedTasks", JSON.stringify(savedTasks));
+      currentTask = null;
     })
   })
 
   currentForm.reset();
-}
-
-let savedTasks = JSON.parse(localStorage.getItem("savedTasks")); // fetching savedTasks obj and converting
-
-if (!savedTasks) {
-  savedTasks = {};
 }
 
 function CreateTicket(value) {
@@ -106,36 +136,68 @@ function CreateTicket(value) {
   const elementText = document.createTextNode(value);
 
   para.appendChild(elementText);
-  para.innerHTML += '<i class="fa-solid fa-xmark"></i>'
+  para.innerHTML += '<i class="fa-solid fa-xmark removeTask"></i>'
   para.setAttribute("draggable", "true");
   return para;
 }
 
 // Theme Change
 const header = document.querySelector("header")
-const buttons = document.querySelectorAll("button")
-const darkMode = document.querySelector(".themeBtn .fa-moon")
+let buttons;
+// const darkMode = document.querySelector(".themeBtn .fa-moon")
 let theme = "dark"
 
 const themeChange = () => {
+  buttons = document.querySelectorAll("buttons");
+
   if (theme === "dark") {
     main.style.backgroundColor = "white"
-    header.style.backgroundColor = "rgb(145, 145, 145)"
+    header.style.backgroundColor = "rgb(124, 196, 230)"
     header.style.color = "black"
+    addCard.style.backgroundColor = "rgb(124, 196, 230)"
+    addCardInput.style.backgroundColor = "rgb(124, 196, 230)"
     buttons.forEach((btn) => {
       btn.style.color = "white"
-      btn.style.backgroundColor = "black"
+      btn.style.backgroundColor = "rgb(41, 41, 41)"
+      btn.style.border = "1px solid white"
     })
-    darkMode.style.color = "black"
     theme = "light"
   } else {
     main.style.backgroundColor = "rgb(41, 41, 41)"
-    header.style.backgroundColor = "black"
+    header.style.backgroundColor = "rgb(2, 5, 39"
     header.style.color = "white"
+    addCard.style.backgroundColor = "white"
+    addCardInput.style.backgroundColor = "white"
     buttons.forEach((btn) => {
       btn.style.color = "black"
       btn.style.backgroundColor = "white"
+      btn.style.border = "1px solid black"
     })
     theme = "dark"
   }
 }
+
+const clearBtn = document.querySelector(".clearBtn")
+cards = document.querySelectorAll(".card")
+
+
+for (const title in savedTasks) {
+  const card = myCreateCard(title);
+
+  const arrayOfTasks = savedTasks[title];
+
+  for (const taskValue of arrayOfTasks) {
+
+
+    const task = CreateTicket(taskValue);
+    card.appendChild(task)
+  }
+
+  main.insertBefore(card, addCard);
+}
+
+
+clearBtn.addEventListener("click", () => {
+  localStorage.clear()
+  location.reload()
+})

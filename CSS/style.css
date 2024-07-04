@@ -15,14 +15,13 @@ header {
     color: white;
     padding: 30px 0;
     position: relative;
-    /* background-color: rgb(124, 196, 230); */
 }
 
 main {
     width: 100vw;
     height: 90vh;
     display: flex;
-    padding: 100px 0;
+    padding: 80px 0;
     justify-content: center;
     flex-wrap: wrap;
     gap: 30px;
@@ -34,7 +33,7 @@ main {
 .card {
     border: 2px dashed white;
     height: auto;
-    max-height: 90%;
+    max-height: 100%;
     min-width: 25%;
     padding: 15px 0;
     padding-bottom: 70px;
@@ -62,7 +61,8 @@ form {
 input {
     width: 70%;
     font-size: 18px;
-    padding: 10px 15px;
+    padding: 10px 5px;
+    padding-left: 10px;
     border-radius: 50px;
     border: none;
     outline: none;
@@ -132,7 +132,8 @@ h3 {
     align-items: center;
     background-color: white;
     padding: 5px 10px;
-    width: 25%;
+    width: 30%;
+    box-shadow: 1px 1px 1px 1px rgb(104, 104, 104);
 }
 
 .addCard-Input {
@@ -140,7 +141,14 @@ h3 {
     font-weight: 800;
     width: 60%;
 }
-
+.addCard-Input::placeholder{
+    font-size: 17px;
+    font-weight: 800;
+}
+.addCardBtn{
+    width: 35%;
+    font-size: 12px;
+}
 .remove-card {
     position: absolute;
     right: 20px;
